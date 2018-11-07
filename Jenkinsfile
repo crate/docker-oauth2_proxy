@@ -17,7 +17,9 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh 'az acr build --registry crate --image crate/oauth2_proxy:latest --no-format .'
+            container('az') {
+              sh 'az acr build --registry crate --image crate/oauth2_proxy:latest --no-format .'
+            }
           }
         }
         stage('az acr build tag') {
@@ -25,7 +27,9 @@ pipeline {
             buildingTag()
           }
           steps {
-            sh 'az acr build --registry crate --image crate/oauth2_proxy:${TAG_NAME} --no-format .'
+            container('az') {
+              sh 'az acr build --registry crate --image crate/oauth2_proxy:${TAG_NAME} --no-format .'
+            }
           }
         }
       }
