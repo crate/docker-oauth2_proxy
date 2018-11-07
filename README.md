@@ -21,6 +21,12 @@ $ docker run -d -p 4180:4180 \
     machinedata/oauth2_proxy
 ```
 
+## Development
+
+The image is built by Jenkins and pushed to the Crate.io container registry on
+Azure. Jenkins will build a Docker image on each push to the master branch and
+will tag it `latest`. It will also build images for each tag of the repository.
+
 ## Environment variables
 
 It is very easy to configure oauth2_proxy via environment variables. If no

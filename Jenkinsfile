@@ -1,36 +1,31 @@
 pipeline {
-  agent {
-    label 'kubernetes && az'
+  agent none
+  environment {
+    AZ_REGISTRY = 'crate'
+    DOCKER_IMAGE_NAME = 'crate/oauth2_proxy'
   }
   stages {
-    stage('az login') {
+    stage('build') {
+      when {
+        beforeAgent true
+        branch 'master'
+        buildingTag()
+      }
+      agent {
+        label 'az'
+      }
       steps {
         container('az') {
           sh 'az login --service-principal -u ${AZ_ACR_USER} -p ${AZ_ACR_PASS} --tenant crate.io'
-        }
-      }
-    }
-    stage('az acr build') {
-      parallel {
-        stage('az acr build latest') {
-          when {
-            branch 'master'
-          }
-          steps {
-            container('az') {
-              sh 'az acr build --registry crate --image crate/oauth2_proxy:latest --no-format .'
-            }
-          }
-        }
-        stage('az acr build tag') {
-          when {
-            buildingTag()
-          }
-          steps {
-            container('az') {
-              sh 'az acr build --registry crate --image crate/oauth2_proxy:${TAG_NAME} --no-format .'
-            }
-          }
+          sh '''
+            if [[ BRANCH_NAME = 'master' ]]; then
+                IMAGE_LATEST="--image ${DOCKER_IMAGE_NAME}:latest"
+            fi
+            if [[ ! -z TAG_NAME ]]; then
+                IMAGE_TAG="--image ${DOCKER_IMAGE_NAME}:${TAG_NAME}"
+            fi
+            az acr build --registry ${AZ_REGISTRY} ${IMAGE_LATEST} ${IMAGE_TAG} --no-format .
+          '''
         }
       }
     }
