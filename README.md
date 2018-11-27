@@ -18,7 +18,7 @@ $ docker run -d -p 4180:4180 \
     -e OAUTH2_PROXY_CLIENT_ID=... \
     -e OAUTH2_PROXY_CLIENT_SECRET=... \
     -e OAUTH2_PROXY_UPSTREAM=... \
-    machinedata/oauth2_proxy
+    registry.cr8.net/crate/oauth2_proxy
 ```
 
 ## Development
@@ -105,7 +105,7 @@ $ mv oauth2_proxy.cfg.example oauth2_proxy.cfg
 $ sed -i -e "s/# http_address = .*/http_address = \"0.0.0.0:4180\"/" oauth2_proxy.cfg.example
 $ docker run -d \
              -v $(pwd)/oauth2_proxy.cfg.example:/conf/oauth2_proxy.cfg:ro \
-             -p 4180:4180 machinedata/oauth2_proxy
+             -p 4180:4180 registry.cr8.net/crate/oauth2_proxy
 ```
 
 ## Volumes
